@@ -82,3 +82,19 @@ async function fetchPlaces(token) {
   }
 }
 fetchPlaces();
+
+function displayPlaces(places) {
+  const placesList = document.getElementById('places-list');
+  placesList.innerHTML = '';
+  places.forEach(place => {
+      const placeDiv = document.createElement('div');
+      placeDiv.className = 'place';
+      placeDiv.innerHTML = `
+          <h3>${place.name}</h3>
+          <p>${place.description}</p>
+          <p><strong>Localisation :</strong> ${place.location}</p>
+          <p><strong>Prix :</strong> $${place.price}</p>
+      `;
+      placesList.appendChild(placeDiv);
+  });
+}
