@@ -16,6 +16,8 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///db.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CORS_ORIGINS = ['http://localhost:5500']
+    CORS_SUPPORTS_CREDENTIALS = True
 
 config = {
     'development': DevelopmentConfig,

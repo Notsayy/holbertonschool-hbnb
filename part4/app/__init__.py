@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restx import Api
+from flask_cors import CORS
 from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.places import api as places_ns
@@ -11,6 +12,7 @@ from app.database import init_db, seed_db
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5500"}}, supports_credentials=True)
     api = Api(app, version='1.0', title='HBnB API', description='HBnB Application API')
     bcrypt.init_app(app=app)
     jwt.init_app(app=app)

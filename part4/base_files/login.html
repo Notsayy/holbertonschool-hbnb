@@ -4,9 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/part4/base_files/style.css" />
   </head>
   <body>
+    <header>
+      <nav>
+        <a href="index.html">
+          <img src="/part4/images/logo.png" alt="Logo" class="logo" />
+        </a>
+        <a href="login.html" id="login-link" class="login-button">Login</a>
+      </nav>
+    </header>
     <main>
       <form id="login-form">
         <h2>Login</h2>
@@ -17,8 +25,12 @@
         <input type="password" id="password" name="password" required />
 
         <button type="submit">Login</button>
+        <div id="error-message"></div>
       </form>
     </main>
     <script src="scripts.js"></script>
+    <footer>
+      <p>Copyright &copy; 2025 HBNB Inc. All rights reserved.</p>
+    </footer>
   </body>
 </html>
