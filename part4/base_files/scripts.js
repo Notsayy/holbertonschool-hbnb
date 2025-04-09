@@ -61,3 +61,24 @@ function getCookie(name) {
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
+async function fetchPlaces(token) {
+  const url = 'http://localhost:5000/api/v1/places/';
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP Error : ${response.status}`);
+    }
+    const places = await response.json();
+    console.log(places);
+  } catch (error) {
+    console.error('Error when recovering places :', error.message);
+  }
+}
+fetchPlaces();
