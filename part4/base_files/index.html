@@ -1,65 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>HbnB</title>
-		<link rel="stylesheet" href="/base_files/style.css" />
-	</head>
-	<body>
-		<header>
-			<nav>
-				<a href="index.html">
-					<img src="/images/logo.png" alt="Logo" class="logo" />
-				</a>
-				<a href="login.html" id="login-link" class="login-button"
-					>Login</a
-				>
-			</nav>
-		</header>
-		<main>
-			<div class="available">
-				<h2>Available Places</h2>
-			</div>
-			<div class="filter-container">
-				<section id="filter">
-					<label for="price-filter">Max Price:</label>
-					<select id="price-filter">
-						<!-- Options will be populated dynamically -->
-					</select>
-				</section>
-			</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HbnB</title>
+    <link rel="stylesheet" href="/base_files/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="index.html">
+          <img src="/images/logo.png" alt="Logo" class="logo" />
+        </a>
+        <a href="login.html" id="login-link" class="login-button">Login</a>
+      </nav>
+    </header>
+    <main>
+      <div class="available">
+        <h2>Available Places</h2>
+      </div>
+      <div class="filter-container">
+        <section id="filter">
+          <label for="price-filter">Max Price:</label>
+          <select id="price-filter">
+            <!-- Options will be populated dynamically -->
+          </select>
+        </section>
+      </div>
 
-			<section id="places-list">
-				<div class="place-card">
-					<h2><strong>Place1</strong></h2>
-					<p>Price per night: 150$</p>
-					<a href="place.html">
-						<button class="details-button">View Details</button>
-					</a>
-				</div>
-
-				<div class="place-card">
-					<h2><strong>Place2</strong></h2>
-					<p>Price per night: 200$</p>
-					<a href="place.html">
-						<button class="details-button">View Details</button>
-					</a>
-					<img src="/part4/images/testt.avif" alt="" />
-				</div>
-
-				<div class="place-card">
-					<h2><strong>Place3</strong></h2>
-					<p>Price per night: 250$</p>
-					<a href="place.html">
-						<button class="details-button">View Details</button>
-					</a>
-				</div>
-			</section>
-		</main>
-		<script src="scripts.js"></script>
-		<footer>
-			<p>Copyright © 2025 HBNB Inc. All rights reserved.</p>
-		</footer>
-	</body>
+      <section id="places-list">
+        <!-- List of places will be populated dynamically -->
+      </section>
+    </main>
+    <script src="scripts.js"></script>
+    <footer>
+      <p>Copyright © 2025 HBNB Inc. All rights reserved.</p>
+    </footer>
+  </body>
 </html>

@@ -53,6 +53,7 @@ function checkAuthentication() {
     login_link.style.display = 'block';
   } else {
     login_link.style.display = 'none';
+    fetchPlaces(token);
   }
 }
 
@@ -77,24 +78,26 @@ async function fetchPlaces(token) {
     }
     const places = await response.json();
     console.log(places);
+    displayPlaces(places);
   } catch (error) {
     console.error('Error when recovering places :', error.message);
   }
 }
-fetchPlaces();
 
 function displayPlaces(places) {
   const placesList = document.getElementById('places-list');
   placesList.innerHTML = '';
-  places.forEach(place => {
-      const placeDiv = document.createElement('div');
-      placeDiv.className = 'place';
-      placeDiv.innerHTML = `
-          <h3>${place.name}</h3>
-          <p>${place.description}</p>
-          <p><strong>Localisation :</strong> ${place.location}</p>
-          <p><strong>Prix :</strong> $${place.price}</p>
-      `;
-      placesList.appendChild(placeDiv);
+  places.forEach((place) => {
+    const placeElement = document.createElement('div');
+    placeElement.className = 'place-item';
+    placeElement.dataset.price = place.price;
+    placeElement.innerHTML = `
+      <h2>${place.title}</h2>
+      <p>Description: ${place.description}</p>
+      <p>Latitude: ${place.latitude}</p>
+      <p>Longitude: ${place.longitude}</p>
+      <p>Price per night: $${place.price}</p>
+    `;
+    placesList.appendChild(placeElement);
   });
 }
