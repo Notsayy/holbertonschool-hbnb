@@ -172,9 +172,9 @@ async function fetchPlaceDetails(token, placeId) {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'credentials': 'include'
+        'Content-Type': 'application/json'
       },
+      credentials: 'include'
     });
 
     if (!response.ok) {
@@ -185,6 +185,62 @@ async function fetchPlaceDetails(token, placeId) {
     console.log('Place Details:', placeDetails);
     return placeDetails;
   } catch (error) {
+    console.error('Error fetching place details:', error);
     return null;
   }
 }
+
+// Nouveau code pour afficher les détails d'une place
+document.addEventListener('DOMContentLoaded', async () => {
+  // Vérifier si nous sommes sur la page de détails d'une place
+  if (window.location.pathname.includes('place.html')) {
+    checkAuthentication(); // Vérifier l'authentification pour gérer le lien de connexion
+    
+    const placeId = getPlaceIdFromURL();
+    const token = getCookie('token');
+    
+    if (placeId && token) {
+      const placeDetails = await fetchPlaceDetails(token, placeId);
+      if (placeDetails) {
+        displayPlaceDetails(placeDetails);
+      } else {
+        displayError("Impossible de charger les détails de la place.");
+      }
+    } else {
+      displayError("Place non trouvée ou non authentifié");
+    }
+  }
+});
+
+function displayPlaceDetails(place) {
+  const placeDetailsContainer = document.getElementById('place-details');
+  if (!placeDetailsContainer) return;
+  
+  console.log("Displaying place details:", place);
+  
+  // Créer le contenu HTML pour afficher les détails de la place
+  const placeDetailsHTML = `
+    <h1>${place.title}</h1>
+    <div class="place-details-container">
+      <div class="place-info">
+        <p><strong>Description:</strong> ${place.description}</p>
+        <p><strong>Prix par nuit:</strong> $${place.price}</p>
+        <p><strong>Emplacement:</strong> Latitude ${place.latitude}, Longitude ${place.longitude}</p>
+      </div>
+      <div class="place-owner">
+        <p><strong>Propriétaire:</strong> ${place.owner ? `${place.owner.first_name} ${place.owner.last_name}` : 'Non spécifié'}</p>
+      </div>
+    </div>
+  `;
+  
+  // Insérer le HTML dans le conteneur
+  placeDetailsContainer.innerHTML = placeDetailsHTML;
+  
+  // Afficher un message de débogage dans la console
+  console.log("Place details content added to DOM");
+}
+
+// Ajouter une fonction de débogage pour voir les erreurs potentielles
+window.addEventListener('error', function(e) {
+  console.error('JavaScript error:', e.message, 'at', e.filename, 'line', e.lineno);
+});
