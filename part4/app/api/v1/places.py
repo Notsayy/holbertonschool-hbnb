@@ -58,7 +58,17 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
-        return place.to_dict(), 200
+
+        owner = {
+            'id': place.owner.id,
+            'first_name': place.owner.first_name,
+            'last_name': place.owner.last_name,
+            'email': place.owner.email
+        }
+
+        response = place.to_dict()
+        response['owner'] = owner
+        return response, 200
 
     @jwt_required()
     @api.expect(place_model)
