@@ -9,6 +9,13 @@ class Config:
     ADMIN_FIRST_NAME = 'Admin'
     ADMIN_LAST_NAME = 'HBnB'
     ADMIN_ID = '36c9050e-ddd3-4c3b-9731-9f487208bbc1'
+
+
+    TEST_EMAIL = 'testuser@gmail.com'
+    TEST_PASSWORD = 'azerty'
+    TEST_FIRST_NAME = 'test'
+    TEST_LAST_NAME = 'user'
+    TEST_ID = 'bc58c0ad-3f85-45e9-b5c5-37a12a1'
     
     INITIAL_AMENITIES = ['WiFi', 'Swimming Pool', 'Air Conditioning']
 

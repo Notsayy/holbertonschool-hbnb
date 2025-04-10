@@ -15,6 +15,7 @@ def seed_db():
     _seed_amenities()
     _seed_places()
     _seed_reviews()
+    _seed_test_user()
     
     db.session.commit()
 
@@ -34,6 +35,23 @@ def _seed_admin_user():
         current_app.logger.info(f"Admin user created: {admin.email}")
     else:
         current_app.logger.info("Admin user already exists.")
+
+def _seed_test_user():
+    """Create the test user if it doesn't exist."""
+    test_user_exists = User.query.filter_by(email=current_app.config['TEST_EMAIL']).first()
+    
+    if not test_user_exists:
+        test_user = User(
+            first_name=current_app.config['TEST_FIRST_NAME'],
+            last_name=current_app.config['TEST_LAST_NAME'],
+            email=current_app.config['TEST_EMAIL'],
+            password=current_app.config['TEST_PASSWORD'],
+            is_admin=False
+        )
+        db.session.add(test_user)
+        current_app.logger.info(f"Test user created: {test_user.email}")
+    else:
+        current_app.logger.info("Test user already exists.")
 
 def _seed_amenities():
     """Create the initial amenities if they don't exist."""
