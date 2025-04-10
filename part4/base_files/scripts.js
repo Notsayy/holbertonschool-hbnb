@@ -86,11 +86,19 @@ async function fetchPlaces(token) {
 
 function displayPlaces(places) {
   const placesList = document.getElementById('places-list');
+  if (!placesList) return;
+
+  // Réinitialise le contenu du conteneur
   placesList.innerHTML = '';
+
+  // Parcourt les lieux et ajoute chaque élément au DOM
   places.forEach((place) => {
+    // Crée un conteneur pour le lieu
     const placeElement = document.createElement('div');
     placeElement.className = 'place-item';
     placeElement.dataset.price = place.price;
+
+    // Ajoute le contenu HTML du lieu
     placeElement.innerHTML = `
       <h2>${place.title}</h2>
       <p>Description: ${place.description}</p>
@@ -98,6 +106,113 @@ function displayPlaces(places) {
       <p>Longitude: ${place.longitude}</p>
       <p>Price per night: $${place.price}</p>
     `;
+
+    // Crée dynamiquement le bouton "View Details"
+    const viewDetailsButton = document.createElement('button');
+    viewDetailsButton.textContent = 'View Details';
+    viewDetailsButton.className = 'view-details-button';
+
+    // Ajoute un gestionnaire d'événement au bouton
+    viewDetailsButton.addEventListener('click', () => {
+      window.location.href = `place.html?id=${place.id}`; // Redirige vers la page des détails avec l'ID dans l'URL
+    });
+
+    // Ajoute le bouton au conteneur de la place
+    placeElement.appendChild(viewDetailsButton);
+
+    // Ajoute la place au conteneur principal
     placesList.appendChild(placeElement);
   });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const priceFilter = document.getElementById('price-filter');
+  if (priceFilter) {
+    priceFilter.innerHTML = '';
+    const options = [
+      { value: '10', text: '$10' },
+      { value: '50', text: '$50' },
+      { value: '100', text: '$100' },
+      { value: 'all', text: 'All' },
+    ];
+
+    options.forEach((option) => {
+      const optionElement = document.createElement('option');
+      optionElement.value = option.value;
+      optionElement.textContent = option.text;
+      priceFilter.appendChild(optionElement);
+    });
+    priceFilter.value = 'all';
+    priceFilter.addEventListener('change', handlePriceFilter);
+  }
+});
+
+function handlePriceFilter(event) {
+  const selectedPrice = event.target.value;
+  const placesList = document.querySelectorAll('.place-item');
+
+  placesList.forEach((place) => {
+    const placePrice = parseInt(place.dataset.price, 10);
+
+    if (selectedPrice === 'all' || placePrice <= parseInt(selectedPrice, 10)) {
+      place.style.display = 'block';
+    } else {
+      place.style.display = 'none';
+    }
+  });
+}
+function getPlaceIdFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('id');
+}
+
+async function fetchPlaceDetails(token, placeId) {
+  try {
+    const url = `http://localhost:5000/api/v1/places/${placeId}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP Error : ${response.status}`);
+    }
+    const placeDetails = await response.json();
+    displayPlaceDetails(placeDetails);
+  } catch (error) {
+    console.error('Error fetching place details:', error.message);
+  }
+}
+function displayPlaceDetails(place, reviews) {
+  const placeDetailsContainer = document.getElementById('place-details');
+  if (!placeDetailsContainer) return;
+
+  // Génère le contenu HTML pour les détails du lieu et les avis
+  placeDetailsContainer.innerHTML = `
+    <div class="place-info">
+      <h3>${place.name}</h3>
+      <p><strong>Host:</strong> ${place.host}</p>
+      <p><strong>Price per night:</strong> $${place.price}</p>
+      <p><strong>Description:</strong> ${place.description}</p>
+      <p><strong>Amenities:</strong> ${place.amenities.join(', ')}</p>
+    </div>
+    <section id="reviews">
+      <h2>Reviews</h2>
+      ${reviews
+        .map(
+          (review) => `
+        <div class="review-card">
+          <p><strong>User:</strong> ${review.user}</p>
+          <p>${review.comment}</p>
+          <p><strong>Rating:</strong> ${'★'.repeat(review.rating)}${'☆'.repeat(
+            5 - review.rating
+          )}</p>
+        </div>
+      `
+        )
+        .join('')}
+    </section>
+  `;
 }
