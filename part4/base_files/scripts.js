@@ -165,7 +165,6 @@ function getPlaceIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get('id');
 }
-
 async function fetchPlaceDetails(token, placeId) {
   try {
     const url = `http://localhost:5000/api/v1/places/${placeId}`;
@@ -174,45 +173,18 @@ async function fetchPlaceDetails(token, placeId) {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
+        'credentials': 'include'
       },
     });
-    if (!response.ok) {
-      throw new Error(`HTTP Error : ${response.status}`);
-    }
-    const placeDetails = await response.json();
-    displayPlaceDetails(placeDetails);
-  } catch (error) {
-    console.error('Error fetching place details:', error.message);
-  }
-}
-function displayPlaceDetails(place, reviews) {
-  const placeDetailsContainer = document.getElementById('place-details');
-  if (!placeDetailsContainer) return;
 
-  // Génère le contenu HTML pour les détails du lieu et les avis
-  placeDetailsContainer.innerHTML = `
-    <div class="place-info">
-      <h3>${place.name}</h3>
-      <p><strong>Host:</strong> ${place.host}</p>
-      <p><strong>Price per night:</strong> $${place.price}</p>
-      <p><strong>Description:</strong> ${place.description}</p>
-      <p><strong>Amenities:</strong> ${place.amenities.join(', ')}</p>
-    </div>
-    <section id="reviews">
-      <h2>Reviews</h2>
-      ${reviews
-        .map(
-          (review) => `
-        <div class="review-card">
-          <p><strong>User:</strong> ${review.user}</p>
-          <p>${review.comment}</p>
-          <p><strong>Rating:</strong> ${'★'.repeat(review.rating)}${'☆'.repeat(
-            5 - review.rating
-          )}</p>
-        </div>
-      `
-        )
-        .join('')}
-    </section>
-  `;
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const placeDetails = await response.json();
+    console.log('Place Details:', placeDetails);
+    return placeDetails;
+  } catch (error) {
+    return null;
+  }
 }
