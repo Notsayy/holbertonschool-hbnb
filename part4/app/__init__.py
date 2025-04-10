@@ -12,7 +12,7 @@ from app.database import init_db, seed_db
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5500"}}, supports_credentials=True)
+    CORS(app, resources={r"/api/v1/*": {"origins": app.config['CORS_ORIGINS'], "supports_credentials": True}})
     api = Api(app, version='1.0', title='HBnB API', description='HBnB Application API')
     bcrypt.init_app(app=app)
     jwt.init_app(app=app)
