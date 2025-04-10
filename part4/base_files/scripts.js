@@ -53,7 +53,6 @@ function checkAuthentication() {
     login_link.style.display = 'block';
   } else {
     login_link.style.display = 'none';
-    fetchPlaces();
   }
 }
 
@@ -82,19 +81,20 @@ async function fetchPlaces(token) {
     console.error('Error when recovering places :', error.message);
   }
 }
+fetchPlaces();
 
 function displayPlaces(places) {
   const placesList = document.getElementById('places-list');
   placesList.innerHTML = '';
-  places.forEach((place) => {
-    const placeDiv = document.createElement('div');
-    placeDiv.className = 'place';
-    placeDiv.innerHTML = `
+  places.forEach(place => {
+      const placeDiv = document.createElement('div');
+      placeDiv.className = 'place';
+      placeDiv.innerHTML = `
           <h3>${place.name}</h3>
           <p>${place.description}</p>
           <p><strong>Localisation :</strong> ${place.location}</p>
-          <p><strong>Price per night :</strong> $${place.price}</p>
+          <p><strong>Prix :</strong> $${place.price}</p>
       `;
-    placesList.appendChild(placeDiv);
+      placesList.appendChild(placeDiv);
   });
 }
