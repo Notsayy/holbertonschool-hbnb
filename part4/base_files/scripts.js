@@ -1,4 +1,3 @@
-// Helper function to get a cookie value by name
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -6,13 +5,11 @@ function getCookie(name) {
   return null;
 }
 
-// Helper function to extract the place ID from the URL
 function getPlaceIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('id'); // Changed from 'place_id' to 'id'
+  return urlParams.get('id');
 }
 
-// Display a general error message in the DOM
 function displayError(message) {
   const errorMessage = document.getElementById('error-message');
   if (errorMessage) {
@@ -20,7 +17,6 @@ function displayError(message) {
   }
 }
 
-// Check authentication and redirect if not authenticated
 function checkAuthentication() {
   const token = getCookie('token');
   const login_link = document.getElementById('login-link');
@@ -32,7 +28,6 @@ function checkAuthentication() {
   }
 }
 
-// Fetch places from the API
 async function fetchPlaces(token) {
   const url = 'http://localhost:5000/api/v1/places/';
   try {
@@ -56,7 +51,6 @@ async function fetchPlaces(token) {
   }
 }
 
-// Display places in the DOM
 function displayPlaces(places) {
   const placesList = document.getElementById('places-list');
   if (!placesList) return;
@@ -88,7 +82,6 @@ function displayPlaces(places) {
   });
 }
 
-// Handle price filter change event
 function handlePriceFilter(event) {
   const selectedPrice = event.target.value;
   const placesList = document.querySelectorAll('.place-item');
@@ -104,7 +97,6 @@ function handlePriceFilter(event) {
   });
 }
 
-// Fetch details of a specific place from the API
 async function fetchPlaceDetails(token, placeId) {
   try {
     const url = `http://localhost:5000/api/v1/places/${placeId}`;
@@ -131,7 +123,6 @@ async function fetchPlaceDetails(token, placeId) {
   }
 }
 
-// Fetch reviews for a specific place from the API
 async function fetchReviews(token, placeId) {
   try {
     const url = `http://localhost:5000/api/v1/places/${placeId}/reviews/`;
@@ -158,12 +149,25 @@ async function fetchReviews(token, placeId) {
   }
 }
 
-// Display the details of a specific place in the DOM
 async function displayPlaceDetails(place) {
   const placeDetailsContainer = document.getElementById('place-details');
   if (!placeDetailsContainer) return;
 
   console.log('Displaying place details:', place);
+
+  let amenitiesList = '';
+  if (place.amenities && place.amenities.length > 0) {
+    amenitiesList = `
+          <p><strong>Amenities:</strong></p>
+          <ul>
+              ${place.amenities
+                .map((amenity) => `<li>${amenity.name}</li>`)
+                .join('')}
+          </ul>
+      `;
+  } else {
+    amenitiesList = '<p>No amenities available.</p>';
+  }
 
   const placeDetailsHTML = `
       <h1>${place.title}</h1>
@@ -171,8 +175,9 @@ async function displayPlaceDetails(place) {
           <div class="place-info">
               <p><strong>Description:</strong> ${place.description}</p>
               <p><strong>Price per night:</strong> $${place.price}</p>
-              <p><strong>Latitude:</strong> ${place.latitude}<p>
-               <p><strong>Longitude:</strong> ${place.longitude}</p>
+              <p><strong>Latitude:</strong> ${place.latitude}</p>
+              <p><strong>Longitude:</strong> ${place.longitude}</p>
+              ${amenitiesList}  <!-- Ajouter la liste des amenities ici -->
           </div>
           <div class="place-owner">
               <p><strong>Host:</strong> ${
@@ -197,12 +202,11 @@ async function displayPlaceDetails(place) {
   displayReviews(reviews);
 }
 
-// Display reviews in the DOM
 function displayReviews(reviews) {
   const reviewsContainer = document.getElementById('reviews-list');
   if (!reviewsContainer) return;
 
-  reviewsContainer.innerHTML = ''; // Efface le contenu précédent
+  reviewsContainer.innerHTML = '';
 
   if (!reviews || reviews.length === 0) {
     reviewsContainer.innerHTML = '<p>No reviews available.</p>';
@@ -220,7 +224,6 @@ function displayReviews(reviews) {
   });
 }
 
-// Display an error message for reviews
 function displayReviewError(message) {
   const reviewsContainer = document.getElementById('reviews-list');
   if (reviewsContainer) {
@@ -230,11 +233,91 @@ function displayReviewError(message) {
   }
 }
 
-// Event listener for DOMContentLoaded
+function displaySuccessMessage(message) {
+  const addReviewSection = document.getElementById('add-review');
+  if (addReviewSection) {
+    addReviewSection.innerHTML = `<p class="success-message">${message}</p>`;
+  } else {
+    console.error('Add review section not found.');
+  }
+}
+
+function displayAddReviewError(message) {
+  const addReviewSection = document.getElementById('add-review');
+  if (addReviewSection) {
+    addReviewSection.innerHTML = `<p class="error-message">${message}</p>`;
+  } else {
+    console.error('Add review section not found.');
+  }
+}
+
+function displayAddReviewForm() {
+  const token = getCookie('token');
+  const addReviewSection = document.getElementById('add-review');
+
+  if (token) {
+    const formHTML = `
+          <h3>Add a Review</h3>
+          <form id="review-form">
+              <textarea name="text" placeholder="Write your review..." required></textarea><br>
+              <label for="rating">Rating:</label>
+              <select name="rating" id="rating" required>
+                  <option value="5">5/5</option>
+                  <option value="4">4/5</option>
+                  <option value="3">3/5</option>
+                  <option value="2">2/5</option>
+                  <option value="1">1/5</option>
+              </select><br>
+              <button type="submit">Submit Review</button>
+          </form>
+      `;
+    addReviewSection.innerHTML = formHTML;
+
+    document
+      .getElementById('review-form')
+      .addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const placeId = getPlaceIdFromURL();
+        const text = event.target.text.value;
+        const rating = event.target.rating.value;
+
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/v1/places/${placeId}/reviews/`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ text, rating }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+          }
+
+          displaySuccessMessage('Review submitted successfully!');
+          location.reload();
+        } catch (error) {
+          console.error('Error submitting review:', error);
+          displayAddReviewError(
+            'Failed to submit the review. Please try again.'
+          );
+        }
+      });
+  } else {
+    addReviewSection.innerHTML =
+      '<p>You must be logged in to add a review.</p>';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   checkAuthentication();
-  const loginForm = document.getElementById('login-form');
 
+  const loginForm = document.getElementById('login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -271,7 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Check if we are on place.html
   if (window.location.pathname.includes('place.html')) {
     const placeId = getPlaceIdFromURL();
     const token = getCookie('token');
@@ -280,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fetchPlaceDetails(token, placeId).then((placeDetails) => {
         if (placeDetails) {
           displayPlaceDetails(placeDetails);
+          displayAddReviewForm();
         } else {
           displayError('Failed to load place details.');
         }
@@ -290,7 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Add a debug function to see potential errors
 window.addEventListener('error', function (e) {
   console.error(
     'JavaScript error:',
@@ -302,7 +384,6 @@ window.addEventListener('error', function (e) {
   );
 });
 
-// Event listener for price filter (initialized only on index.html)
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.location.pathname.includes('place.html')) {
     const priceFilter = document.getElementById('price-filter');
