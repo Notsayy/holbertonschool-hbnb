@@ -64,9 +64,6 @@ function displayPlaces(places) {
 
     placeElement.innerHTML = `
           <h2>${place.title}</h2>
-          <p>Description: ${place.description}</p>
-          <p>Latitude: ${place.latitude}</p>
-          <p>Longitude: ${place.longitude}</p>
           <p>Price per night: $${place.price}</p>
       `;
 
@@ -155,20 +152,6 @@ async function displayPlaceDetails(place) {
 
   console.log('Displaying place details:', place);
 
-  let amenitiesList = '';
-  if (place.amenities && place.amenities.length > 0) {
-    amenitiesList = `
-          <p><strong>Amenities:</strong></p>
-          <ul>
-              ${place.amenities
-                .map((amenity) => `<li>${amenity.name}</li>`)
-                .join('')}
-          </ul>
-      `;
-  } else {
-    amenitiesList = '<p>No amenities available.</p>';
-  }
-
   const placeDetailsHTML = `
       <h1>${place.title}</h1>
       <div class="place-details-container">
@@ -177,7 +160,6 @@ async function displayPlaceDetails(place) {
               <p><strong>Price per night:</strong> $${place.price}</p>
               <p><strong>Latitude:</strong> ${place.latitude}</p>
               <p><strong>Longitude:</strong> ${place.longitude}</p>
-              ${amenitiesList}  <!-- Ajouter la liste des amenities ici -->
           </div>
           <div class="place-owner">
               <p><strong>Host:</strong> ${
@@ -217,6 +199,7 @@ function displayReviews(reviews) {
     const reviewElement = document.createElement('div');
     reviewElement.className = 'review-item';
     reviewElement.innerHTML = `
+          <p><strong>Host:</strong> test user<p>
           <p><strong>Rating:</strong> ${review.rating}/5</p>
           <p><strong>Text:</strong> ${review.text}</p>
       `;
