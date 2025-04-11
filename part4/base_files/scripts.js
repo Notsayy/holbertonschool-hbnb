@@ -57,15 +57,28 @@ function displayPlaces(places) {
 
   placesList.innerHTML = '';
 
-  places.forEach((place) => {
+  places.forEach((place, index) => {
     const placeElement = document.createElement('div');
     placeElement.className = 'place-item';
     placeElement.dataset.price = place.price;
 
-    placeElement.innerHTML = `
-          <h2>${place.title}</h2>
-          <p>Price per night: $${place.price}</p>
-      `;
+    const placeImage = document.createElement('img');
+    if (index === 0) {
+      placeImage.src = '/images/moder_loft_london.jpg';
+    } else if (index === 1) {
+      placeImage.src = '/images/Beachfront_Bungalow_in_Bali.jpg';
+    } else {
+      placeImage.src = '/images/Luxury_Penthouse_in_Dubai.jpg';
+    }
+    placeImage.alt = `${place.title} Image`;
+    placeImage.className = 'place-image';
+
+    placeElement.appendChild(placeImage);
+
+    placeElement.innerHTML += `
+      <h2>${place.title}</h2>
+      <p>Price per night: $${place.price}</p>
+    `;
 
     const viewDetailsButton = document.createElement('button');
     viewDetailsButton.textContent = 'View Details';
@@ -169,7 +182,7 @@ async function displayPlaceDetails(place) {
               }</p>
           </div>
       </div>
-      <h2>Reviews</h2>
+      <h1>Reviews</h1>
       <div id="reviews-list">
           <!-- Reviews will be displayed here -->
       </div>
